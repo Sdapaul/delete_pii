@@ -1,9 +1,9 @@
 {
-    "target_path": "C:\\Users\\YourName\\Downloads",
-    "extensions": [".tmp", ".log", ".zip"],
-    "keywords": ["temp", "임시", "test"],
+    "target_path": "C:\\Users\\admin\\Downloads",
+    "extensions": [".tmp", ".log", ".xlsx"],
+    "keywords": ["temp", "임시", "test", "LaVIEW"],
     "quarantine_days": 30,
     "delete_days": 7,
-    "quarantine_dir": "C:\\Users\\YourName\\Downloads\\Quarantine",
+    "quarantine_dir": "C:\\Users\\admin\\Downloads\\Quarantine",
     "runs_per_day": 0
 }

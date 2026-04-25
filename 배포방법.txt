@@ -1,0 +1,36 @@
+이미 배포에 필요한 스크립트가 모두 갖춰져 있습니다. 흐름을 정리하면:
+
+  ---
+  배포자 (인터넷 PC, Python 있음) — 1회만
+
+  build.bat 더블클릭 하면 자동으로:
+  1. PyInstaller 설치 (없으면 자동)
+  2. file_cleaner.exe 빌드 (약 30초~1분)
+  3. 배포패키지\ 폴더 생성
+
+  배포패키지\
+    ├── file_cleaner.exe   ← Python 런타임 내장
+    ├── run_cleaner.bat
+    ├── setup.bat
+    └── 사용법.md
+
+  → 배포패키지\ 폴더를 우클릭 → 보내기 → 압축(ZIP) 후 USB/사내서버로 전달
+
+  ▎ config.json은 포함하지 마세요. 개인 경로가 담겨 있고, 수신자 PC에서
+  ▎ setup.bat이 새로 만듭니다.
+
+  ---
+  수신자 (폐쇄망 PC, Python 불필요) — 설치 시 1회만
+
+  1. ZIP 압축 해제
+  2. setup.bat 더블클릭 → 자동으로:
+    - 파일을 C:\FileCleaner\에 복사
+    - 대화형으로 경로·기간 설정 (config.json 생성)
+    - 작업 스케줄러 자동 등록
+
+  ---
+  주의사항 2가지
+
+  SmartScreen 경고 시: "추가 정보" 클릭 → "실행" (최초 1회만)
+
+  백신 오탐 시: 백신 설정에서 C:\FileCleaner\ 폴더를 예외 등록

@@ -228,7 +228,7 @@ def quarantine_files(cfg: dict, log: logging.Logger) -> int:
                 continue
 
             age = file_age_days(fpath)
-            if age < 0 or age <= threshold:
+            if age < 0 or age < threshold:
                 continue
 
             dest = safe_dest(quarantine_dir, fname)
