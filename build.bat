@@ -48,10 +48,12 @@ set "PKG=%~dp0배포패키지"
 if exist "!PKG!" rmdir /s /q "!PKG!"
 mkdir "!PKG!"
 
-copy /y "%~dp0dist\file_cleaner.exe"  "!PKG!\file_cleaner.exe"  > nul
-copy /y "%~dp0run_cleaner_exe.bat"    "!PKG!\run_cleaner.bat"   > nul
-copy /y "%~dp0setup_exe.bat"          "!PKG!\setup.bat"         > nul
-if exist "%~dp0사용법.md" copy /y "%~dp0사용법.md" "!PKG!\사용법.md" > nul
+copy /y "%~dp0dist\file_cleaner.exe"         "!PKG!\file_cleaner.exe"  > nul
+copy /y "%~dp0run_cleaner_exe.bat"           "!PKG!\run_cleaner.bat"   > nul
+copy /y "%~dp0setup_exe.bat"                 "!PKG!\setup.bat"         > nul
+copy /y "%~dp0release\uninstall.bat"         "!PKG!\uninstall.bat"     > nul
+if exist "%~dp0사용법.md"  copy /y "%~dp0사용법.md"  "!PKG!\사용법.md"  > nul
+if exist "%~dp0사용법.pdf" copy /y "%~dp0사용법.pdf" "!PKG!\사용법.pdf" > nul
 
 :: 임시 빌드 파일 정리
 rmdir /s /q "%~dp0build_tmp" > nul 2>&1

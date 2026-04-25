@@ -29,9 +29,11 @@ if not exist "!INSTALL_DIR!" (
     mkdir "!INSTALL_DIR!"
 )
 
-copy /y "%~dp0file_cleaner.exe" "!INSTALL_DIR!\file_cleaner.exe" > nul
-copy /y "%~dp0run_cleaner.bat"  "!INSTALL_DIR!\run_cleaner.bat"  > nul
-if exist "%~dp0사용법.md" copy /y "%~dp0사용법.md" "!INSTALL_DIR!\사용법.md" > nul
+copy /y "%~dp0file_cleaner.exe"  "!INSTALL_DIR!\file_cleaner.exe"  > nul
+copy /y "%~dp0run_cleaner.bat"   "!INSTALL_DIR!\run_cleaner.bat"   > nul
+if exist "%~dp0uninstall.bat"    copy /y "%~dp0uninstall.bat"   "!INSTALL_DIR!\uninstall.bat"   > nul
+if exist "%~dp0사용법.md"  copy /y "%~dp0사용법.md"  "!INSTALL_DIR!\사용법.md"  > nul
+if exist "%~dp0사용법.pdf" copy /y "%~dp0사용법.pdf" "!INSTALL_DIR!\사용법.pdf" > nul
 
 echo [설치] 프로그램 파일 복사 완료: !INSTALL_DIR!
 echo.

@@ -37,8 +37,9 @@ if not exist "!INSTALL_DIR!" mkdir "!INSTALL_DIR!"
 xcopy /s /e /y /q "%~dp0python" "!INSTALL_DIR!\python\" > nul
 echo [설치] Python(portable) 복사 완료
 
-copy /y "%~dp0file_cleaner.py"           "!INSTALL_DIR!\file_cleaner.py"  > nul
-copy /y "%~dp0run_cleaner_portable.bat"  "!INSTALL_DIR!\run_cleaner.bat"  > nul
+copy /y "%~dp0file_cleaner.py"           "!INSTALL_DIR!\file_cleaner.py"           > nul
+copy /y "%~dp0run_cleaner_portable.bat"  "!INSTALL_DIR!\run_cleaner.bat"           > nul
+if exist "%~dp0uninstall.bat"            copy /y "%~dp0uninstall.bat" "!INSTALL_DIR!\uninstall.bat" > nul
 if exist "%~dp0사용법.md"  copy /y "%~dp0사용법.md"  "!INSTALL_DIR!\사용법.md"  > nul
 if exist "%~dp0사용법.pdf" copy /y "%~dp0사용법.pdf" "!INSTALL_DIR!\사용법.pdf" > nul
 
