@@ -28,6 +28,15 @@ PROTECTED_PATHS = [
     "C:\\boot",
 ]
 
+# 환경변수 기반 보호 경로 동적 추가 (AppData, 사용자 프로필 등)
+for _env in ("APPDATA", "LOCALAPPDATA", "PROGRAMDATA", "PROGRAMFILES",
+             "PROGRAMFILES(X86)", "WINDIR", "SYSTEMROOT"):
+    _p = os.environ.get(_env)
+    if _p:
+        _norm = os.path.normpath(_p)
+        if _norm.upper() not in [os.path.normpath(x).upper() for x in PROTECTED_PATHS]:
+            PROTECTED_PATHS.append(_norm)
+
 # exe로 실행 시 sys.executable 기준, 스크립트 실행 시 __file__ 기준
 if getattr(sys, "frozen", False):
     BASE_DIR = os.path.dirname(sys.executable)
@@ -129,6 +138,12 @@ def _validate_config(cfg: dict):
     cfg.setdefault("extensions", [])
     cfg.setdefault("keywords", [])
     cfg.setdefault("runs_per_day", 0)
+    cfg.setdefault("exclude_paths", [])
+    # config의 exclude_paths를 전역 보호 목록에 반영
+    for p in cfg["exclude_paths"]:
+        norm = os.path.normpath(p)
+        if norm.upper() not in [os.path.normpath(x).upper() for x in PROTECTED_PATHS]:
+            PROTECTED_PATHS.append(norm)
 
 # ── 보호 판단 헬퍼 ───────────────────────────────────────────────────────
 
@@ -283,6 +298,8 @@ def run_cycle(cfg: dict, log: logging.Logger):
     log.info(f"  확장자: {cfg['extensions'] or '(전체)'}")
     log.info(f"  키워드: {cfg['keywords'] or '(전체)'}")
     log.info(f"  격리 기준: {cfg['quarantine_days']}일  /  삭제 기준: {cfg['delete_days']}일")
+    if cfg.get("exclude_paths"):
+        log.info(f"  추가 제외 경로: {cfg['exclude_paths']}")
     log.info("=" * 56)
 
     q = quarantine_files(cfg, log)
