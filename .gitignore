@@ -1,0 +1,7 @@
+CLAUDE.md
+activity_log.txt
+배포패키지/
+dist/
+build_tmp/
+*.spec
+__pycache__/

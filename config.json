@@ -1,0 +1,9 @@
+{
+    "target_path": "C:\\Users\\YourName\\Downloads",
+    "extensions": [".tmp", ".log", ".zip"],
+    "keywords": ["temp", "임시", "test"],
+    "quarantine_days": 30,
+    "delete_days": 7,
+    "quarantine_dir": "C:\\Users\\YourName\\Downloads\\Quarantine",
+    "runs_per_day": 0
+}
