@@ -1,0 +1,9 @@
+* text=auto
+
+# bat 파일은 Windows CRLF 강제 유지
+*.bat text eol=crlf
+
+# Python / Markdown / JSON 은 LF
+*.py  text eol=lf
+*.md  text eol=lf
+*.json text eol=lf
