@@ -44,7 +44,7 @@ else:
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 CONFIG_FILE = os.path.join(BASE_DIR, "config.json")
-LOG_FILE    = os.path.join(BASE_DIR, "activity_log.txt")
+LOG_FILE    = os.path.join(BASE_DIR, "activity_log.log")
 
 # ── 로거 설정 ────────────────────────────────────────────────────────────
 
