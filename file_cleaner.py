@@ -74,6 +74,14 @@ def _ask(prompt: str, default: str = "") -> str:
     value = input(f"{prompt}{suffix}: ").strip()
     return value if value else default
 
+def _ask_int(prompt: str, default: int) -> int:
+    while True:
+        raw = _ask(prompt, str(default))
+        try:
+            return int(raw)
+        except ValueError:
+            print("  숫자를 입력하세요.")
+
 def interactive_setup() -> dict:
     print("\n" + "=" * 56)
     print("   파일 자동 격리/삭제 프로그램 — 초기 설정")
@@ -89,14 +97,14 @@ def interactive_setup() -> dict:
     ext_raw = _ask("2. 대상 확장자 (쉼표 구분, 없으면 Enter → 전체)", "")
     keywords_raw = _ask("3. 파일명 포함 단어 (쉼표 구분, 없으면 Enter → 전체)", "")
 
-    quarantine_days = int(_ask("4. 격리 기준일  — 생성 후 N일 초과 시 격리", "30"))
-    delete_days     = int(_ask("5. 삭제 기준일  — 격리 후 M일 초과 시 영구 삭제", "7"))
+    quarantine_days = _ask_int("4. 격리 기준일  — 생성 후 N일 초과 시 격리", 30)
+    delete_days     = _ask_int("5. 삭제 기준일  — 격리 후 M일 초과 시 영구 삭제", 7)
     quarantine_dir  = _ask("6. 격리 폴더 경로", default_quarantine)
 
     print("\n  실행 방식 선택:")
     print("    0  = 한 번 실행 후 종료")
     print("    1~24 = 하루에 N번 반복 (예: 2 → 12시간마다)")
-    runs_per_day = int(_ask("7. 하루 실행 횟수", "0"))
+    runs_per_day = _ask_int("7. 하루 실행 횟수", 0)
 
     config = {
         "target_path":     target,
@@ -119,8 +127,20 @@ def interactive_setup() -> dict:
 def load_config() -> dict:
     force_config = "--config" in sys.argv
 
-    if force_config or os.path.exists(CONFIG_FILE):
-        if force_config or _ask(f"\n{CONFIG_FILE} 파일이 있습니다. 사용하시겠습니까?", "y").lower() == "y":
+    if force_config:
+        if not os.path.exists(CONFIG_FILE):
+            sys.exit(
+                f"[오류] config.json 파일이 없습니다: {CONFIG_FILE}\n"
+                "  setup.bat 을 먼저 실행해 초기 설정을 완료하세요."
+            )
+        with open(CONFIG_FILE, encoding="utf-8") as f:
+            cfg = json.load(f)
+        print(f"  → {CONFIG_FILE} 로드 완료")
+        _validate_config(cfg)
+        return cfg
+
+    if os.path.exists(CONFIG_FILE):
+        if _ask(f"\n{CONFIG_FILE} 파일이 있습니다. 사용하시겠습니까?", "y").lower() == "y":
             with open(CONFIG_FILE, encoding="utf-8") as f:
                 cfg = json.load(f)
             print(f"  → {CONFIG_FILE} 로드 완료")
@@ -243,12 +263,14 @@ def quarantine_files(cfg: dict, log: logging.Logger) -> int:
                 continue
 
             age = file_age_days(fpath)
-            if age < 0 or age < threshold:
+            if age < 0 or age <= threshold:
                 continue
 
             dest = safe_dest(quarantine_dir, fname)
             try:
                 shutil.move(fpath, dest)
+                now = time.time()
+                os.utime(dest, (now, now))  # 격리 시각을 mtime에 기록 (삭제 기준 기산점)
                 log.info(f"[격리]  {fpath}  →  {dest}  (생성 후 {age}일)")
                 count += 1
             except (OSError, shutil.Error) as e:
@@ -312,6 +334,12 @@ def run_cycle(cfg: dict, log: logging.Logger):
 def main():
     cfg = load_config()
     log = setup_logger()
+
+    # --setup: 설치 스크립트에서 호출 시 설정 저장만 하고 종료
+    if "--setup" in sys.argv:
+        print(f"\n[설정 완료] 설정이 저장되었습니다.")
+        print(f"  파일: {os.path.abspath(CONFIG_FILE)}")
+        return
 
     runs_per_day = cfg.get("runs_per_day", 0)
 
